@@ -4,22 +4,56 @@ BlackT Code Style is a powerful VS Code extension designed to streamline your co
 
 ## Features
 
-- **Apply `Style50` Coding Standards**: Automatically format your code by replacing spaces with four spaces, following the `Style50` formatting guidelines.
-- **Reset Code Styles to Default**: Quickly revert the applied style and restore your code to its original form.
+- **Apply `Style50` Coding Standards**: Automatically format your code by applying `Style50` formatting rules, ensuring consistent code style for multiple languages (Python, JavaScript, Java, C, C++, etc.).
+- **Terminal Support**: Apply the `Style50` formatting directly from the terminal using the `codestyle` command on any supported file.
+- **Split Editor View**: After applying the style, view your code with the applied changes side-by-side with the original file in a split editor layout.
+- **Supports Multiple File Types**: Works seamlessly with various languages, including `.py`, `.js`, `.java`, `.c`, `.cpp`, and more.
+
+## Requirements
+
+Before using the BlackT Code Style extension, make sure you have the following installed:
+
+1. **Style50**: This extension relies on the `style50` command-line tool to format your code. You can install it using the following command:
+    ```bash
+    pip install style50
+    ```
+    Or follow the installation instructions from the official [Style50 repository](https://github.com/your-style50-repo-link).
+
+2. **VS Code**: This extension requires Visual Studio Code to work properly.
 
 ## How to Use
 
-### 1. Open the Command Palette
-- Press `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (Mac) to open the Command Palette in VS Code.
+You can apply the `Style50` code style using either the **Command Palette** in VS Code or the **Terminal**:
 
-### 2. Run the `Apply Style50` Command
-- Type and select the `Apply Style50` command from the palette. This will format your code according to the Style50 rules (replacing multiple spaces with four spaces).
-  
-### 3. Reset Code Style
-- You can also reset the code style by running the `Reset Style` command, which will return the code to its default state (for example, trimming excess whitespace).
+### Method 1: Use the Command Palette
+1. Open the Command Palette:
+    - Press `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (Mac) to open the Command Palette in VS Code.
 
-### Webview Interface
-- Once you run the `Apply Style50` command, a GUI interface will open, allowing you to interact with the extension visually. You can easily switch between applying the `Style50` code style and resetting the style with one click.
+2. Run the `Apply Code Style` Command:
+    - Type and select the `Apply Code Style` command from the palette. This will format your code according to the `Style50` rules (such as replacing multiple spaces with four spaces and ensuring proper coding conventions).
+
+3. View Changes:
+    - After running the command, the original code will be displayed on the left, and the formatted code will appear on the right side of the editor in a split view.
+
+4. Reset Code Style:
+    - You can reset the code style by using the `Reset Style` command, which will revert the changes and restore the original formatting.
+
+### Method 2: Use the Terminal
+1. Open your terminal in VS Code.
+
+2. Run the `codestyle` Command:
+    - Type the following command in the terminal:
+    ```bash
+    codestyle <file-path>
+    ```
+    - For example, to format a Python file, run:
+    ```bash
+    codestyle app.py
+    ```
+    - This command will apply `Style50` formatting to the specified file.
+
+3. View Changes:
+    - The formatted code will be displayed side-by-side with the original code in a split editor view.
 
 ## Installation
 
@@ -56,4 +90,3 @@ If you'd like to contribute to the project, feel free to fork the repository, cr
 ## Acknowledgements
 
 Thank you to the open-source community for your contributions, and to the users of BlackT Code Style for providing feedback that helps improve the extension!
-

@@ -2,7 +2,7 @@
   "name": "blackt-codestyle",
   "displayName": "BlackT Code Style",
   "description": "VS Code extension to apply custom code styles.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "publisher": "bla999ckt",
   "icon": "images/icon.png",
   "license": "MIT",
@@ -18,21 +18,21 @@
     "url": "https://github.com/bla999ckt/blackt-codestyle.git"
   },
   "contributes": {
-    "commands": [
-      {
-        "command": "codestyle",
-        "title": "Apply Code Style"
-      }
-    ],
-    "views": {
-      "explorer": [
-        {
-          "id": "style50Explorer",
-          "name": "Code Style"
-        }
-      ]
+  "commands": [
+    {
+      "command": "codestyle",
+      "title": "Apply Code Style"
     }
-  },
+  ],
+  "views": {
+    "explorer": [
+      {
+        "id": "style50Explorer",
+        "name": "Code Style"
+      }
+    ]
+  }
+},
   "devDependencies": {
     "esbuild": "^0.24.2",
     "vscode": "^1.1.34"

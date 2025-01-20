@@ -1,150 +1,68 @@
 const vscode = require('vscode');
+const { exec } = require('child_process');
+const fs = require('fs');
 
 // This method is called when your extension is activated
-/**
- * @param {vscode.ExtensionContext} context
- */
 function activate(context) {
     console.log('Your extension "blackt-codestyle" is now active!');
 
-    // Register the command to open the style selection interface
-    const disposable = vscode.commands.registerCommand('codestyle', function () {
+    // Register the command to apply code style from terminal
+    const disposableTerminal = vscode.commands.registerCommand('codestyle', function (fileUri) {
+        const filePath = fileUri.fsPath; // Get the file path from the terminal
 
-        // Create a WebView panel for the code style GUI
-        const panel = vscode.window.createWebviewPanel(
-            'style50Webview', // Identifies the type of the webview
-            'Select Code Style', // Title for the webview
-            vscode.ViewColumn.One, // Editor column to show the webview in
-            {
-                enableScripts: true, // Enable JavaScript in the webview
-            }
-        );
-
-        // Set the HTML content for the WebView
-        panel.webview.html = getWebviewContent();
-
-        // Handle messages from the WebView
-        panel.webview.onDidReceiveMessage(message => {
-            switch (message.command) {
-                case 'applyStyle50':
-                    applyStyle50();
-                    break;
-                case 'resetStyle':
-                    resetStyle();
-                    break;
-            }
-        });
+        if (fs.existsSync(filePath)) {
+            runStyle50(filePath); // Run the style50 command on the file
+        } else {
+            vscode.window.showErrorMessage(`File not found: ${filePath}`);
+        }
     });
 
-    context.subscriptions.push(disposable);
+    // Register the command to apply code style via the command palette
+    const disposablePanel = vscode.commands.registerCommand('blackt-codestyle.applyCodeStyle', function () {
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+            const filePath = editor.document.uri.fsPath;
+            runStyle50(filePath); // Run the style50 command on the active file
+        }
+    });
+
+    context.subscriptions.push(disposableTerminal, disposablePanel);
+}
+
+// Function to invoke the `style50` command on the file
+function runStyle50(filePath) {
+    exec(`style50 ${filePath}`, (error, stdout, stderr) => {
+        if (error) {
+            vscode.window.showErrorMessage(`Error formatting file: ${stderr}`);
+            return;
+        }
+
+        // After running the style50 command, we can show the results in the editor
+        displayFormattedCode(filePath, stdout);
+    });
+}
+
+// Function to display the formatted code in a split editor view
+function displayFormattedCode(filePath, formattedContent) {
+    const editor = vscode.window.activeTextEditor;
+    if (editor) {
+        const originalDocument = editor.document;
+        
+        // Open the original document in the left editor column
+        vscode.workspace.openTextDocument(filePath).then(doc => {
+            vscode.window.showTextDocument(doc, vscode.ViewColumn.One);
+
+            // Create a new untitled document to display formatted content
+            vscode.workspace.openTextDocument({ content: formattedContent }).then(newDoc => {
+                vscode.window.showTextDocument(newDoc, vscode.ViewColumn.Beside);
+                vscode.window.showInformationMessage(`Style50 applied to ${filePath}`);
+            });
+        });
+    }
 }
 
 // This method is called when your extension is deactivated
 function deactivate() {}
-
-// Function to apply "style50" formatting
-function applyStyle50() {
-    const editor = vscode.window.activeTextEditor; // Get the active editor
-    if (editor) {
-        const text = editor.document.getText(); // Get the text of the document
-
-        // Example of formatting logic: Replace multiple spaces with four spaces (style50)
-        const formattedText = text.replace(/\s+/g, '    '); // Replace spaces with 4 spaces
-
-        // Create a range to replace the entire document content
-        const fullTextRange = new vscode.Range(
-            editor.document.positionAt(0),
-            editor.document.positionAt(text.length)
-        );
-
-        // Apply the formatted text to the editor
-        editor.edit(editBuilder => {
-            editBuilder.replace(fullTextRange, formattedText); // Replace content with formatted text
-        });
-    }
-}
-
-// Function to reset the style (just a placeholder for now)
-function resetStyle() {
-    const editor = vscode.window.activeTextEditor; // Get the active editor
-    if (editor) {
-        const text = editor.document.getText(); // Get the text of the document
-
-        // Example of resetting the text (can be changed to something else)
-        const resetText = text.trim(); // Just trimming whitespace as a simple "reset"
-
-        // Create a range to replace the entire document content
-        const fullTextRange = new vscode.Range(
-            editor.document.positionAt(0),
-            editor.document.positionAt(text.length)
-        );
-
-        // Apply the reset text to the editor
-        editor.edit(editBuilder => {
-            editBuilder.replace(fullTextRange, resetText); // Replace content with reset text
-        });
-    }
-}
-
-// Helper function to generate the HTML content for the WebView (GUI)
-function getWebviewContent() {
-    return `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Code Style Settings</title>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    padding: 20px;
-                }
-                .container {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 10px;
-                }
-                .button {
-                    padding: 10px;
-                    background-color: #0078d4;
-                    color: white;
-                    border: none;
-                    cursor: pointer;
-                }
-                .button:hover {
-                    background-color: #005fa3;
-                }
-                .title {
-                    font-size: 20px;
-                    margin-bottom: 20px;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <h2 class="title">Choose Your Code Style</h2>
-                <button class="button" onclick="applyStyle50()">Apply Style50</button>
-                <button class="button" onclick="resetStyle()">Reset Style</button>
-            </div>
-            <script>
-                // Function to handle "Apply Style50" button
-                function applyStyle50() {
-                    // Send message to the extension to apply style50
-                    const vscode = acquireVsCodeApi();
-                    vscode.postMessage({ command: 'applyStyle50' });
-                }
-
-                // Function to handle "Reset Style" button
-                function resetStyle() {
-                    const vscode = acquireVsCodeApi();
-                    vscode.postMessage({ command: 'resetStyle' });
-                }
-            </script>
-        </body>
-        </html>
-    `;
-}
 
 module.exports = {
     activate,
