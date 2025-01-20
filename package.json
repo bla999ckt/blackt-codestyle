@@ -19,10 +19,10 @@
   },
   "contributes": {
     "commands": [
-      {
-        "command": "blackt-codestyle.style50",
-        "title": "Apply Style50"
-      }
+  {
+    "command": "codestyle",
+    "title": "Apply Code Style"
+  }
     ],
     "views": {
       "explorer": [
