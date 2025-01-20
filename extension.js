@@ -131,11 +131,13 @@ function getWebviewContent() {
                 // Function to handle "Apply Style50" button
                 function applyStyle50() {
                     // Send message to the extension to apply style50
+                    const vscode = acquireVsCodeApi();
                     vscode.postMessage({ command: 'applyStyle50' });
                 }
 
                 // Function to handle "Reset Style" button
                 function resetStyle() {
+                    const vscode = acquireVsCodeApi();
                     vscode.postMessage({ command: 'resetStyle' });
                 }
             </script>
