@@ -1,0 +1,46 @@
+{
+  "name": "blackt-codestyle",
+  "displayName": "BlackT Code Style",
+  "description": "VS Code extension to apply custom code styles.",
+  "version": "1.0.1",
+  "publisher": "bla999ckt",
+  "icon": "images/icon.png",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "activationEvents": [
+    "onCommand:codestyle"
+  ],
+  "main": "./extension.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bla999ckt/blackt-codestyle.git"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "blackt-codestyle.style50",
+        "title": "Apply Style50"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "style50Explorer",
+          "name": "Code Style"
+        }
+      ]
+    }
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.2",
+    "vscode": "^1.1.34"
+  },
+  "scripts": {
+    "package": "vsce package",
+    "compile": "echo 'No compilation necessary'",
+    "vscode:prepublish": "npm run compile",
+    "build": "esbuild extension.js --bundle --outfile=out/extension.js --external:vscode"
+  }
+}
