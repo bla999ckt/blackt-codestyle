@@ -9,6 +9,9 @@
   "engines": {
     "vscode": "^1.78.0"
   },
+  "bin": {
+    "codestyle": "./codestyle-cli.js"
+  },
   "activationEvents": [
     "onCommand:codestyle",
     "onCommand:blackt-codestyle.applyCodeStyle"
