@@ -14,7 +14,7 @@ function activate(context) {
         if (editor && editor.document) {
             const filePath = editor.document.uri.fsPath;
             if (fs.existsSync(filePath)) {
-                formatAndDisplayCode(filePath); // Format and display the code
+                formatAndMonitorCode(filePath); // Format and monitor the code
             } else {
                 vscode.window.showErrorMessage(`File not found: ${filePath}`);
             }
@@ -29,7 +29,7 @@ function activate(context) {
 
         if (editor && editor.document) {
             const filePath = editor.document.uri.fsPath;
-            formatAndDisplayCode(filePath); // Format and display the code
+            formatAndMonitorCode(filePath); // Format and monitor the code
         } else {
             vscode.window.showErrorMessage('No active editor or document found.');
         }
@@ -38,8 +38,8 @@ function activate(context) {
     context.subscriptions.push(disposableTerminal, disposablePanel);
 }
 
-// Function to format and display the code
-async function formatAndDisplayCode(filePath) {
+// Function to format and monitor the code
+async function formatAndMonitorCode(filePath) {
     try {
         console.log('Processing file:', filePath);
 
@@ -85,9 +85,31 @@ async function formatAndDisplayCode(filePath) {
             diffTitle
         );
 
-        // Cleanup the codestyle file
-        fs.unlinkSync(codestyleFilePath);
-        console.log(`Successfully deleted codestyle file: ${codestyleFilePath}`);
+        // Monitor for changes and auto-close if content matches
+        const monitorChanges = vscode.workspace.onDidChangeTextDocument(async (e) => {
+            const currentDocument = vscode.window.activeTextEditor?.document;
+
+            if (currentDocument && currentDocument.uri.fsPath === filePath) {
+                const currentContent = currentDocument.getText();
+                if (currentContent === formattedContent) {
+                    vscode.window.showInformationMessage('Your code looks good!');
+                    await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
+                    monitorChanges.dispose(); // Stop monitoring
+                }
+            }
+        });
+
+        // Cleanup codestyle file when diff closes
+        vscode.workspace.onDidCloseTextDocument((document) => {
+            if (document.uri.fsPath === codestyleFilePath) {
+                try {
+                    fs.unlinkSync(codestyleFilePath);
+                    console.log(`Successfully deleted codestyle file: ${codestyleFilePath}`);
+                } catch (err) {
+                    console.error(`Failed to delete the codestyle file: ${err}`);
+                }
+            }
+        });
     } catch (err) {
         console.error('Error processing file:', err);
         vscode.window.showErrorMessage(`Error processing file: ${err.message}`);
