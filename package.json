@@ -7,14 +7,14 @@
   "icon": "images/icon.png",
   "license": "MIT",
   "engines": {
-    "vscode": "^1.78.0"
+    "vscode": "^1.96.0"
   },
   "bin": {
     "codestyle": "./codestyle-cli.js"
   },
   "activationEvents": [
     "onCommand:codestyle",
-    "onCommand:blackt-codestyle.applyCodeStyle"
+    "onCommand:applyCodeStyle"
   ],
   "main": "./extension.js",
   "repository": {
@@ -23,10 +23,6 @@
   },
   "contributes": {
     "commands": [
-      {
-        "command": "codestyle",
-        "title": "Apply Code Style"
-      },
       {
         "command": "blackt-codestyle.applyCodeStyle",
         "title": "Apply Code Style"
@@ -42,23 +38,18 @@
     }
   },
   "devDependencies": {
-    "@types/chalk": "^0.4.31",
-    "@types/vscode": "^1.96.0",
     "esbuild": "^0.24.2"
   },
   "scripts": {
     "package": "vsce package",
     "compile": "echo 'No compilation necessary'",
     "vscode:prepublish": "npm run compile",
-    "build": "esbuild extension.js --bundle --outfile=out/extension.js --external:vscode"
+    "build": "esbuild ./extension.js --bundle --outfile=out/extension.js --external:vscode"
   },
   "dependencies": {
     "black": "^0.3.0",
-    "chalk": "^5.4.1",
     "clang-format": "^1.8.0",
-    "crypto": "^1.0.1",
     "prettier": "^3.4.2",
-    "vscode": "^1.1.37",
-    "child_process": "1.0.2"
-  }
+    "vscode": "^1.96.0"
+}
 }

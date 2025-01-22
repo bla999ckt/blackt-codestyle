@@ -1,7 +1,7 @@
-const os = require('os');
-const { exec } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
+const { exec } = require('child_process');
 
 // Global variable to store user-selected styles with defaults for each language
 const STYLES = {
