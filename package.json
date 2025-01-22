@@ -38,7 +38,8 @@
     }
   },
   "devDependencies": {
-    "esbuild": "^0.24.2"
+    "esbuild": "^0.24.2",
+    "vscode": "^1.96.0"
   },
   "scripts": {
     "package": "vsce package",
@@ -49,7 +50,6 @@
   "dependencies": {
     "black": "^0.3.0",
     "clang-format": "^1.8.0",
-    "prettier": "^3.4.2",
-    "vscode": "^1.96.0"
+    "prettier": "^3.4.2"
 }
 }
