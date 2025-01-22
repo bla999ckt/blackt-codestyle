@@ -103,6 +103,30 @@ async function formatAndMonitorCode(filePath) {
     }
 }
 
+// Reverts edits made to the codestyle file
+function rollbackCodestyleFile(document, formattedContent) {
+    vscode.window.visibleTextEditors.forEach((editor) => {
+        if (editor.document === document) {
+            editor.edit((editBuilder) => {
+                // Replace the entire content with the original formatted content
+                const fullRange = new vscode.Range(
+                    0, 0,
+                    document.lineCount, 0
+                );
+                editBuilder.replace(fullRange, formattedContent);
+            }).then((success) => {
+                if (!success) {
+                    vscode.window.showErrorMessage(
+                        "Failed to revert edits to the codestyle file."
+                    );
+                } else {
+                    console.log("Codestyle file reverted successfully.");
+                }
+            });
+        }
+    });
+}
+
 // Closes the diff editor showing the codestyle file
 async function closeDiffEditor(codestyleFilePath) {
     // Find the diff editor that shows the codestyle file
@@ -115,20 +139,6 @@ async function closeDiffEditor(codestyleFilePath) {
         await vscode.window.showTextDocument(diffEditor.document);
         await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
     }
-}
-
-// Reverts edits made to the codestyle file
-function rollbackCodestyleFile(document, formattedContent) {
-    vscode.window.visibleTextEditors.forEach((editor) => {
-        if (editor.document.uri.fsPath === document.uri.fsPath) {
-            editor.edit((editBuilder) => {
-                editBuilder.replace(
-                    new vscode.Range(0, 0, document.lineCount, 0),
-                    formattedContent
-                );
-            });
-        }
-    });
 }
 
 // Cleans up the codestyle file
