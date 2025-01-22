@@ -1,6 +1,9 @@
 const vscode = require('vscode');
 const fs = require('fs');
 const path = require('path');
+const { promisify } = require('util');
+const { exec } = require('child_process');
+const execPromise = promisify(exec);
 const formatFile = require('./formatter'); // Import the formatFile function
 
 // This method is called when your extension is activated
@@ -38,10 +41,22 @@ function activate(context) {
     context.subscriptions.push(disposableTerminal, disposablePanel);
 }
 
+// Declare variables for event listeners outside of the function to ensure cleanup
+let preventEditsDisposable = null;
+let monitorChangesDisposable = null;
+
 // Function to format and monitor the code
 async function formatAndMonitorCode(filePath) {
     try {
         console.log('Processing file:', filePath);
+
+        // Remove previous event listeners if they exist
+        if (preventEditsDisposable) {
+            preventEditsDisposable.dispose();
+        }
+        if (monitorChangesDisposable) {
+            monitorChangesDisposable.dispose();
+        }
 
         const formattedContent = await formatFile(filePath);
 
@@ -60,7 +75,7 @@ async function formatAndMonitorCode(filePath) {
 
         // Check if the formatted content matches the original content
         if (formattedContent === originalContent) {
-            vscode.window.showInformationMessage('Looks good!');
+            vscode.window.showInformationMessage('Your code looks good! :)');
             return;
         }
 
@@ -85,21 +100,39 @@ async function formatAndMonitorCode(filePath) {
             diffTitle
         );
 
-        // Monitor for changes and auto-close if content matches
-        const monitorChanges = vscode.workspace.onDidChangeTextDocument(async (e) => {
+        // Block edits programmatically on the codestyle file
+        preventEditsDisposable = vscode.workspace.onDidChangeTextDocument((event) => {
+            if (event.document.uri.fsPath === codestyleFilePath) {
+                const codestyleDocument = event.document;
+                vscode.window.visibleTextEditors.forEach((editor) => {
+                    if (editor.document.uri.fsPath === codestyleFilePath) {
+                        editor.edit((editBuilder) => {
+                            editBuilder.replace(
+                                new vscode.Range(0, 0, codestyleDocument.lineCount, 0),
+                                formattedContent
+                            );
+                        });
+                    }
+                });
+            }
+        });
+
+        // Monitor for changes to the original file and auto-close if content matches
+        monitorChangesDisposable = vscode.workspace.onDidChangeTextDocument(async (event) => {
             const currentDocument = vscode.window.activeTextEditor?.document;
 
             if (currentDocument && currentDocument.uri.fsPath === filePath) {
                 const currentContent = currentDocument.getText();
                 if (currentContent === formattedContent) {
-                    vscode.window.showInformationMessage('Your code looks good!');
+                    vscode.window.showInformationMessage('Your code looks good! :)');
                     await vscode.commands.executeCommand('workbench.action.closeActiveEditor');
-                    monitorChanges.dispose(); // Stop monitoring
+                    preventEditsDisposable.dispose(); // Stop blocking edits
+                    monitorChangesDisposable.dispose(); // Stop monitoring
                 }
             }
         });
 
-        // Cleanup codestyle file when diff closes
+        // Cleanup codestyle file when the editor closes
         vscode.workspace.onDidCloseTextDocument((document) => {
             if (document.uri.fsPath === codestyleFilePath) {
                 try {
@@ -113,6 +146,20 @@ async function formatAndMonitorCode(filePath) {
     } catch (err) {
         console.error('Error processing file:', err);
         vscode.window.showErrorMessage(`Error processing file: ${err.message}`);
+    }
+}
+
+// Example of how you might run an external command with execPromise
+async function runCommand(command) {
+    try {
+        const { stdout, stderr } = await execPromise(command);
+        if (stderr) {
+            console.error(`Error executing command: ${stderr}`);
+        }
+        console.log(`Command output: ${stdout}`);
+        return stdout;
+    } catch (error) {
+        console.error(`Error executing command: ${error}`);
     }
 }
 

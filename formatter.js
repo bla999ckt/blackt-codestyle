@@ -28,7 +28,7 @@ async function formatFileContent(filePath, style = STYLES) {
 
     // If file extension matches .cpp, .c, .java, format using ClangFormat
     if (fileExtension === '.cpp' || fileExtension === '.c' || fileExtension === '.java') {
-        return formatWithClangFormat(filePath, STYLES[fileExtension.substring(1).toUpperCase()]); 
+        return formatWithClangFormat(filePath, STYLES[fileExtension.substring(1).toUpperCase()]);
     }
 
     throw new Error(`Unsupported file type: ${fileExtension}. Supported types: .js, .py, .cpp, .c, .java`);
@@ -65,7 +65,7 @@ async function formatWithPrettier(filePath, style) {
                     const prettierCommand = `prettier --parser babel --no-config --single-quote=${style === 'single'} "${tempFilePath}"`;
                     exec(prettierCommand, (error, stdout, stderr) => {
                         if (error || stderr) {
-                            reject(new Error(`Prettier formatting error: ${stderr || error.message}`));
+                            reject(new Error(`Prettier failed to format the file: ${filePath}. Error: ${stderr || error.message}`));
                             return;
                         }
 
@@ -78,7 +78,7 @@ async function formatWithPrettier(filePath, style) {
                         resolve(stdout);
                     });
                 })
-                .catch(err => reject(new Error(`Error writing to temp file: ${err.message}`)));
+                .catch(err => reject(new Error(`Error writing to temp file for Prettier: ${err.message}`)));
         });
     } catch (err) {
         throw new Error(`Prettier check failed: ${err.message}`);
@@ -107,7 +107,7 @@ async function formatWithBlack(filePath, style) {
                     // Format the temporary file using Black
                     exec(blackCommand, (error, stdout, stderr) => {
                         if (error || stderr) {
-                            reject(new Error(`Black formatting error: ${stderr || error.message}`));
+                            reject(new Error(`Black failed to format the file: ${filePath}. Error: ${stderr || error.message}`));
                             return;
                         }
 
@@ -119,10 +119,10 @@ async function formatWithBlack(filePath, style) {
                                     .catch(err => console.error(`Failed to delete temp file: ${err.message}`));
                                 resolve(formattedContent); // Return the formatted content
                             })
-                            .catch(err => reject(new Error(`Error reading formatted temp file: ${err.message}`)));
+                            .catch(err => reject(new Error(`Error reading formatted temp file for Black: ${err.message}`)));
                     });
                 })
-                .catch(err => reject(new Error(`Error writing to temp file: ${err.message}`)));
+                .catch(err => reject(new Error(`Error writing to temp file for Black: ${err.message}`)));
         });
     } catch (err) {
         throw new Error(`Black check failed: ${err.message}`);
@@ -150,7 +150,7 @@ async function formatWithClangFormat(filePath, style) {
 
                     exec(clangCommand, (error, stdout, stderr) => {
                         if (error || stderr) {
-                            reject(new Error(`ClangFormat formatting error: ${stderr || error.message}`));
+                            reject(new Error(`ClangFormat failed to format the file: ${filePath}. Error: ${stderr || error.message}`));
                             return;
                         }
 
@@ -163,7 +163,7 @@ async function formatWithClangFormat(filePath, style) {
                         resolve(stdout);
                     });
                 })
-                .catch(err => reject(new Error(`Error writing to temp file: ${err.message}`)));
+                .catch(err => reject(new Error(`Error writing to temp file for ClangFormat: ${err.message}`)));
         });
     } catch (err) {
         throw new Error(`ClangFormat check failed: ${err.message}`);
