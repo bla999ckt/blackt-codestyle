@@ -35,26 +35,16 @@ function activate(context) {
         }
     });
 
-    // Listen for file changes and recheck the code
-    vscode.workspace.onDidSaveTextDocument((document) => {
-        formatAndDisplayCode(document.uri.fsPath);
-    });
-
     context.subscriptions.push(disposableTerminal, disposablePanel);
 }
 
 // Function to format and display the code
 async function formatAndDisplayCode(filePath) {
     try {
-        // Log the file path to ensure it's valid
         console.log('Processing file:', filePath);
 
-        const formattedContent = await formatFile(filePath); // Wait for the formatting result
+        const formattedContent = await formatFile(filePath);
 
-        // Log the formatted content for debugging
-        console.log('Formatted Content:', formattedContent);
-
-        // Ensure that the formattedContent is not undefined or null
         if (!formattedContent) {
             throw new Error('Formatted content is empty or undefined.');
         }
@@ -66,20 +56,24 @@ async function formatAndDisplayCode(filePath) {
             return;
         }
 
+        const originalContent = originalDocument.getText();
+
+        // Check if the formatted content matches the original content
+        if (formattedContent === originalContent) {
+            vscode.window.showInformationMessage('Looks good!');
+            return;
+        }
+
         // Get the file extension of the original file
         const fileExtension = path.extname(filePath).toLowerCase();
 
-        // Define the temporary file path for the codestyle file using the same extension as the original file
+        // Define the temporary file path for the codestyle file
         const codestyleFilePath = path.join(__dirname, `codestyle${fileExtension}`);
 
-        // Write the formatted content to a temporary file (use try-catch for sync methods)
-        try {
-            fs.writeFileSync(codestyleFilePath, formattedContent);
-        } catch (err) {
-            throw new Error(`Error writing formatted content to file: ${err.message}`);
-        }
+        // Write the formatted content to the codestyle file
+        fs.writeFileSync(codestyleFilePath, formattedContent);
 
-        // Open the diff editor with the original file (left) and the codestyle file (right)
+        // Open the diff editor
         const leftUri = vscode.Uri.file(filePath);
         const rightUri = vscode.Uri.file(codestyleFilePath);
 
@@ -91,16 +85,11 @@ async function formatAndDisplayCode(filePath) {
             diffTitle
         );
 
-        // Cleanup after showing the diff
-        try {
-            fs.unlinkSync(codestyleFilePath); // Using sync version to avoid async issues
-            console.log(`Successfully deleted codestyle file: ${codestyleFilePath}`);
-        } catch (err) {
-            console.error(`Failed to delete the codestyle file: ${err}`);
-        }
-
+        // Cleanup the codestyle file
+        fs.unlinkSync(codestyleFilePath);
+        console.log(`Successfully deleted codestyle file: ${codestyleFilePath}`);
     } catch (err) {
-        console.error('Error processing file:', err); // Log the error for better debugging
+        console.error('Error processing file:', err);
         vscode.window.showErrorMessage(`Error processing file: ${err.message}`);
     }
 }

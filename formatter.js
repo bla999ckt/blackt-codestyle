@@ -1,3 +1,4 @@
+const os = require('os');
 const { exec } = require('child_process');
 const fs = require('fs');
 const path = require('path');
@@ -30,7 +31,7 @@ async function formatFileContent(filePath, style = STYLES) {
         return formatWithClangFormat(filePath, STYLES[fileExtension.substring(1).toUpperCase()]); 
     }
 
-    throw new Error('Unsupported file type');
+    throw new Error(`Unsupported file type: ${fileExtension}. Supported types: .js, .py, .cpp, .c, .java`);
 }
 
 // Helper function to check if a tool is installed
@@ -46,31 +47,38 @@ function isToolInstalled(tool) {
     });
 }
 
-// Helper function to read file content after formatting
-function readFileContent(filePath) {
-    return fs.promises.readFile(filePath, 'utf8')
-        .then(data => data)
-        .catch(err => {
-            throw new Error(`Error reading file after formatting: ${err.message}`);
-        });
-}
-
 // Function to format JavaScript files using Prettier
 async function formatWithPrettier(filePath, style) {
     try {
         // Check if Prettier is installed
         await isToolInstalled('prettier');
 
+        // Read the content of the input file
+        const fileContent = await fs.promises.readFile(filePath, 'utf8');
+
         return new Promise((resolve, reject) => {
-            const prettierCommand = `prettier --parser babel --no-config --single-quote=${style === 'single'} "${filePath}"`;
-            exec(prettierCommand, (error, stdout, stderr) => {
-                if (error || stderr) {
-                    reject(new Error(`Prettier formatting error: ${stderr || error.message}`));
-                    return;
-                }
-                // Return the formatted output without modifying the original file
-                resolve(stdout);
-            });
+            // Create a temporary file to avoid modifying the input file
+            const tempFilePath = path.join(os.tmpdir(), path.basename(filePath));
+            fs.promises.writeFile(tempFilePath, fileContent, 'utf8')
+                .then(() => {
+                    // Format the temporary file using Prettier
+                    const prettierCommand = `prettier --parser babel --no-config --single-quote=${style === 'single'} "${tempFilePath}"`;
+                    exec(prettierCommand, (error, stdout, stderr) => {
+                        if (error || stderr) {
+                            reject(new Error(`Prettier formatting error: ${stderr || error.message}`));
+                            return;
+                        }
+
+                        // Delete the temporary file
+                        fs.promises.unlink(tempFilePath).catch(err =>
+                            console.error(`Failed to delete temp file: ${err.message}`)
+                        );
+
+                        // Return the formatted content
+                        resolve(stdout);
+                    });
+                })
+                .catch(err => reject(new Error(`Error writing to temp file: ${err.message}`)));
         });
     } catch (err) {
         throw new Error(`Prettier check failed: ${err.message}`);
@@ -79,8 +87,6 @@ async function formatWithPrettier(filePath, style) {
 
 // Function to format Python files using Black
 async function formatWithBlack(filePath, style) {
-    const os = require('os');
-
     try {
         // Check if Black is installed
         await isToolInstalled('black');
@@ -93,8 +99,13 @@ async function formatWithBlack(filePath, style) {
             const tempFilePath = path.join(os.tmpdir(), path.basename(filePath));
             fs.promises.writeFile(tempFilePath, fileContent, 'utf8')
                 .then(() => {
+                    // Build the Black command based on the style
+                    const lineLength = style.lineLength || 88; // Default line length
+                    const safeMode = style.safe ? '--safe' : ''; // Optional safe mode
+                    const blackCommand = `black --quiet --line-length=${lineLength} ${safeMode} "${tempFilePath}"`;
+
                     // Format the temporary file using Black
-                    exec(`black --quiet --line-length=88 "${tempFilePath}"`, (error, stdout, stderr) => {
+                    exec(blackCommand, (error, stdout, stderr) => {
                         if (error || stderr) {
                             reject(new Error(`Black formatting error: ${stderr || error.message}`));
                             return;
@@ -118,31 +129,45 @@ async function formatWithBlack(filePath, style) {
     }
 }
 
-
 // Function to format C, C++, or Java files using ClangFormat
 async function formatWithClangFormat(filePath, style) {
     try {
         // Check if ClangFormat is installed
         await isToolInstalled('clang-format');
 
-        return new Promise((resolve, reject) => {
-            const clangCommand = style === 'microsoft'
-                ? `clang-format -style=Microsoft "${filePath}"`
-                : `clang-format -style=${style} "${filePath}"`; // Use the style specified by the user
+        // Read the content of the input file
+        const fileContent = await fs.promises.readFile(filePath, 'utf8');
 
-            exec(clangCommand, (error, stdout, stderr) => {
-                if (error || stderr) {
-                    reject(new Error(`ClangFormat formatting error: ${stderr || error.message}`));
-                    return;
-                }
-                // Return the formatted output without modifying the original file
-                resolve(stdout);
-            });
+        return new Promise((resolve, reject) => {
+            // Create a temporary file to avoid modifying the input file
+            const tempFilePath = path.join(os.tmpdir(), path.basename(filePath));
+            fs.promises.writeFile(tempFilePath, fileContent, 'utf8')
+                .then(() => {
+                    // Format the temporary file using ClangFormat
+                    const clangCommand = style === 'microsoft'
+                        ? `clang-format -style=Microsoft "${tempFilePath}"`
+                        : `clang-format -style=${style} "${tempFilePath}"`;
+
+                    exec(clangCommand, (error, stdout, stderr) => {
+                        if (error || stderr) {
+                            reject(new Error(`ClangFormat formatting error: ${stderr || error.message}`));
+                            return;
+                        }
+
+                        // Delete the temporary file
+                        fs.promises.unlink(tempFilePath).catch(err =>
+                            console.error(`Failed to delete temp file: ${err.message}`)
+                        );
+
+                        // Return the formatted content
+                        resolve(stdout);
+                    });
+                })
+                .catch(err => reject(new Error(`Error writing to temp file: ${err.message}`)));
         });
     } catch (err) {
         throw new Error(`ClangFormat check failed: ${err.message}`);
     }
 }
-
 
 module.exports = formatFileContent;
