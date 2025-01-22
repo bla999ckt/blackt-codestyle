@@ -58,6 +58,7 @@
     "clang-format": "^1.8.0",
     "crypto": "^1.0.1",
     "prettier": "^3.4.2",
-    "vscode": "^1.1.37"
+    "vscode": "^1.1.37",
+    "child_process": "1.0.2"
   }
 }
