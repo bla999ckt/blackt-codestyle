@@ -4,6 +4,8 @@ BlackT Code Style is a powerful VS Code extension designed to streamline your co
 
 Not only does it help in maintaining coding standards, but it also serves as a great tool for getting into the habit of formatting code properly. By comparing the original code with the formatted version, users can easily spot and fix mistakes, improving their coding habits over time.
 
+![Video GIF](images/codestyle.gif)
+
 ## Features
 
 - **Apply Custom Coding Standards**: Automatically format your code by applying a combination of Prettier, Clang, and Black formatting rules, ensuring consistent and clean code across multiple languages (Python, JavaScript, Java, C, C++, etc.).
