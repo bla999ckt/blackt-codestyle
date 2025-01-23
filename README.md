@@ -1,5 +1,8 @@
 # BlackT Code Style
 
+- **Demo Video**
+[![Watch the video](https://img.youtube.com/vi/B1cwmkKPMgo/maxresdefault.jpg)](https://youtu.be/B1cwmkKPMgo)
+
 BlackT Code Style is a powerful VS Code extension designed to streamline your coding workflow by enforcing custom code styles in your project. Inspired by the `Style50` tool from CS50.dev, I wanted to create a similar tool that could be used locally in VS Code. With BlackT Code Style, you can easily apply a predefined set of coding standards, ensuring consistent and clean code across your development environment.
 
 Not only does it help in maintaining coding standards, but it also serves as a great tool for getting into the habit of formatting code properly. By comparing the original code with the formatted version, users can easily spot and fix mistakes, improving their coding habits over time.
