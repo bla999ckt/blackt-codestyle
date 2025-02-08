@@ -9,7 +9,7 @@ Not only does it help in maintaining coding standards, but it also serves as a g
 
 ### VsCode Command Palette demo
 
-![Video GIF](images/codestyle.gif)
+![Video GIF](https://github.com/bla999ckt/blackt-codestyle/blob/master/images/codestyle.gif)
 
 ### Command line (Terminal) demo
 
