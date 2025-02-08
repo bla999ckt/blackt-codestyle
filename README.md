@@ -8,6 +8,7 @@ BlackT Code Style is a powerful VS Code extension designed to streamline your co
 Not only does it help in maintaining coding standards, but it also serves as a great tool for getting into the habit of formatting code properly. By comparing the original code with the formatted version, users can easily spot and fix mistakes, improving their coding habits over time.
 
 ![Video GIF](images/codestyle.gif)
+![Video GIF](https://github.com/hinokonoko77/blackt-codestyle/blob/master/images/outputf.gif)
 
 ## Features
 
@@ -61,28 +62,43 @@ You can apply the custom code style using either the **Command Palette** in VS C
     - When everything is fixed, the `codestyle` file will close automatically.
 
 ### Method 2: Use the Terminal
-1. Open your terminal in VS Code.
+Here’s the modified version in **Markdown** format:
 
-2. Run the `codestyle` Command:
-    - Type the following command in the terminal:
-    ```bash
-    code-style <file-path>
-    ```
-    - For example, to format a Python file, run:
-    ```bash
-    code-style file.py
-    ```
-    - This command will apply the custom formatting to the specified file.
+# Using `npm` to Install and Run `code-style`
 
-3. View Changes:
-    - The formatted code will be displayed side-by-side with the original code in a split editor view.
+1. **Install `code-style` Globally using npm**  
+   First, install the tool globally using `npm`:  
+   ```bash
+   npm install -g blackt-codestyle
+   ```
+   This will make the `code-style` command available system-wide.
 
-4. See Errors:
-    - You can see the errors in your code format in red, and the right way to do it in green in the `codestyle` file. Once you correct something, the highlight will disappear, and you can move on to fix other issues.
+2. **Open your terminal in VS Code.**  
+   Ensure you're inside VS Code or a terminal window where you want to format your code.
 
-5. Automatic Closure:
-    - When everything is fixed, the `codestyle` file will close automatically.
+3. **Run the `code-style` Command:**  
+   Type the following command in the terminal:  
+   ```bash
+   code-style <file-path>
+   ```
+   Example: To format a Python file, run:  
+   ```bash
+   code-style file.py
+   ```
+   This command will apply the custom formatting to the specified file.
 
+4. **View Changes:**  
+   The formatted code will be displayed side-by-side with the original code in a split editor view.
+
+5. **See Errors:**  
+   Errors in your code format will be highlighted in red. The corrected format will be shown in green in the `codestyle` file.  
+   As you fix each issue, the highlights will disappear, helping you improve your coding habits.
+
+6. **Automatic Closure:**  
+   Once all formatting issues are resolved, the `codestyle` file will close automatically.
+
+
+You can save this as `README.md` or any other markdown file. Let me know if you'd like further adjustments!
 ### Customizing Code Style Preferences
 
 At the top of the `formatter.js` file, you'll find a configuration block that defines the default styles for different programming languages:
