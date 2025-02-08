@@ -17,7 +17,7 @@ async function formatFileContent(filePath, style = STYLES) {
     const fileExtension = path.extname(filePath).toLowerCase();
 
     // If file extension matches .js, format using Prettier
-    if (fileExtension === '.js') {
+    if (fileExtension === '.js' || fileExtension === '.ts' || fileExtension === '.jsx' || fileExtension === '.tsx') {
         return formatWithPrettier(filePath, style.JAVASCRIPT);
     }
 
@@ -31,7 +31,7 @@ async function formatFileContent(filePath, style = STYLES) {
         return formatWithClangFormat(filePath, STYLES[fileExtension.substring(1).toUpperCase()]);
     }
 
-    throw new Error(`Unsupported file type: ${fileExtension}. Supported types: .js, .py, .cpp, .c, .java`);
+    throw new Error(`Unsupported file type: ${fileExtension}. Supported types: .js, .ts, .jsx, .tsx, .py, .cpp, .c, .java`);
 }
 
 // Helper function to check if a tool is installed
