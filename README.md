@@ -12,9 +12,9 @@ Not only does it help in maintaining coding standards, but it also serves as a g
 ## Features
 
 - **Apply Custom Coding Standards**: Automatically format your code by applying a combination of Prettier, Clang, and Black formatting rules, ensuring consistent and clean code across multiple languages (Python, JavaScript, Java, C, C++, etc.).
-- **Terminal Support**: Apply the custom formatting directly from the terminal using the `codestyle` command on any supported file.
+- **Terminal Support**: Apply the custom formatting directly from the terminal using the `code-style` command on any supported file.
 - **Split Editor View**: After applying the style, view your code with the applied changes side-by-side with the original file in a split editor layout.
-- **Supports Multiple File Types**: Works seamlessly with various languages, including `.py`, `.js`, `.java`, `.c`, `.cpp`, and more.
+- **Supports Multiple File Types**: Works seamlessly with various languages, including `.py`, `.js`, `.java`, `.c`, `.cpp`,`.go`,`.ts`, and more.
 
 ## Requirements
 
@@ -66,11 +66,11 @@ You can apply the custom code style using either the **Command Palette** in VS C
 2. Run the `codestyle` Command:
     - Type the following command in the terminal:
     ```bash
-    codestyle <file-path>
+    code-style <file-path>
     ```
     - For example, to format a Python file, run:
     ```bash
-    codestyle file.py
+    code-style file.py
     ```
     - This command will apply the custom formatting to the specified file.
 
