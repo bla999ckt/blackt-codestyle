@@ -7,7 +7,12 @@ BlackT Code Style is a powerful VS Code extension designed to streamline your co
 
 Not only does it help in maintaining coding standards, but it also serves as a great tool for getting into the habit of formatting code properly. By comparing the original code with the formatted version, users can easily spot and fix mistakes, improving their coding habits over time.
 
+### VsCode Command Palette demo
+
 ![Video GIF](images/codestyle.gif)
+
+### Command line (Terminal) demo
+
 ![Video GIF](https://github.com/hinokonoko77/blackt-codestyle/blob/master/images/outputf.gif)
 
 ## Features
@@ -148,6 +153,14 @@ If you'd like to contribute to the project, feel free to fork the repository, cr
 - Test your changes locally by launching VS Code with your extension: `F5`
 - Submit a pull request with a detailed description of your changes.
 
+## Contributors ✨
+
+Thanks to the following people for contributing to this project:
+
+- [Blackt](https://github.com/bla999ckt) - Creator & Maintainer
+- [Hinoko](https://github.com/hinokonoko77) - Added the Terminal part & additional languages 
+
 ## Acknowledgements
 
 Thank you to the open-source community for your contributions, and to the users of BlackT Code Style for providing feedback that helps improve the extension!
+
