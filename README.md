@@ -17,10 +17,10 @@ Not only does it help in maintaining coding standards, but it also serves as a g
 
 ## Features
 
-- **Apply Custom Coding Standards**: Automatically format your code by applying a combination of Prettier, Clang, and Black formatting rules, ensuring consistent and clean code across multiple languages (Python, JavaScript, Java, C, C++, etc.).
+- **Apply Custom Coding Standards**: Automatically format your code by applying a combination of Prettier, Clang, and Black formatting rules, ensuring consistent and clean code across multiple languages (Python, JavaScript, TypeScript, Java, C, C++, etc.).
 - **Terminal Support**: Apply the custom formatting directly from the terminal using the `code-style` command on any supported file.
 - **Split Editor View**: After applying the style, view your code with the applied changes side-by-side with the original file in a split editor layout.
-- **Supports Multiple File Types**: Works seamlessly with various languages, including `.py`, `.js`, `.java`, `.c`, `.cpp`,`.go`,`.ts`, and more.
+- **Supports Multiple File Types**: Works seamlessly with various languages, including `.py`, `.js`, `.jsx`, `.java`, `.c`, `.cpp`, `.tsx`, `.ts`, and more.
 
 ## Requirements
 
