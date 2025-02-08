@@ -1,0 +1,9 @@
+# .npmignore
+node_modules/
+test/
+coverage/
+.git/
+.github/
+.vscode/
+*.log
+.DS_Store
