@@ -4,7 +4,7 @@
   "description": "Code style formatting tools and configuration",
   "license": "MIT",
   "main": "./extension.js",
-  "publisher": "your-publisher-id",
+  "publisher": "bla999ckt",
   "categories": [
     "Formatters"
   ],
