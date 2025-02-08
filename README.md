@@ -68,8 +68,7 @@ You can apply the custom code style using either the **Command Palette** in VS C
 
 ### Method 2: Use the Terminal
 Here’s the modified version in **Markdown** format:
-
-# Using `npm` to Install and Run `code-style`
+ (Using `npm` to Install and Run `code-style`)
 
 1. **Install `code-style` Globally using npm**  
    First, install the tool globally using `npm`:  
@@ -90,20 +89,8 @@ Here’s the modified version in **Markdown** format:
    ```bash
    code-style file.py
    ```
-   This command will apply the custom formatting to the specified file.
+   This command will apply the custom formatting to the specified file directly.
 
-4. **View Changes:**  
-   The formatted code will be displayed side-by-side with the original code in a split editor view.
-
-5. **See Errors:**  
-   Errors in your code format will be highlighted in red. The corrected format will be shown in green in the `codestyle` file.  
-   As you fix each issue, the highlights will disappear, helping you improve your coding habits.
-
-6. **Automatic Closure:**  
-   Once all formatting issues are resolved, the `codestyle` file will close automatically.
-
-
-You can save this as `README.md` or any other markdown file. Let me know if you'd like further adjustments!
 ### Customizing Code Style Preferences
 
 At the top of the `formatter.js` file, you'll find a configuration block that defines the default styles for different programming languages:
