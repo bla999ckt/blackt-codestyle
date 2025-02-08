@@ -1,6 +1,6 @@
 {
   "name": "blackt-codestyle",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Code style formatting tools and configuration",
   "license": "MIT",
   "main": "./extension.js",
