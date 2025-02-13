@@ -1,10 +1,11 @@
 {
   "name": "blackt-codestyle",
-  "version": "1.0.13",
+  "version": "1.0.15",
   "description": "Code style formatting tools and configuration",
   "license": "MIT",
   "main": "./extension.js",
   "publisher": "bla999ckt",
+  "icon": "images/icon.png",
   "categories": [
     "Formatters"
   ],
